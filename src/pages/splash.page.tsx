@@ -13,7 +13,7 @@ const SplashPage = () => {
     }
 
     if (authStore.authState === AuthState.unauthenticated) {
-      navigate(Routes.user.dashboard, { replace: true });
+      navigate(Routes.auth.login, { replace: true });
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

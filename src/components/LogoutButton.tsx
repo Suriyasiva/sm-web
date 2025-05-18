@@ -9,7 +9,7 @@ const LogoutButton = () => {
   const navigate = useNavigate();
 
   function handleLogout() {
-    navigate(Routes.guest.dashboard);
+    navigate(Routes.auth.login);
     authStore.logout();
   }
 

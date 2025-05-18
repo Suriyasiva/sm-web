@@ -47,7 +47,7 @@ const PrimaryInput = (props: PrimaryInputProps) => {
         <InputRightElement
           width='10%'
           cursor='pointer'
-          color={AppColors.redColor500}
+          color={AppColors.primaryColor}
           fontSize='1em'
           mt='2px'
           right={3}

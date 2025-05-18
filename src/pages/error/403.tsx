@@ -6,7 +6,7 @@ const ForbiddenPage = () => {
   return <Center w={'100%'}>
     <VStack>
       <Text>The requested page is forbidden</Text>
-      <Button><Link to={Routes.guest.dashboard}>Go to Home</Link></Button>
+      <Button><Link to={Routes.auth.login}>Go to Home</Link></Button>
     </VStack>
   </Center>;
 };
