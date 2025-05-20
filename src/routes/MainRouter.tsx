@@ -31,9 +31,19 @@ const MainRouter = () => {
   }, []);
 
   useEffect(() => {
-    if (authStore.authState === AuthState.authenticated) {
+    const { authState } = authStore;
+    const currentPath = location.pathname;
+    const isPublicPath = PUBLIC_PATH.includes(currentPath);
+
+    if (
+      authState === AuthState.authenticated &&
+      currentPath !== Routes.admin.dashboard
+    ) {
       navigate(Routes.admin.dashboard);
-    } else if (authStore.authState === AuthState.unauthenticated && !PUBLIC_PATH.includes(location.pathname)) {
+    } else if (
+      authState === AuthState.unauthenticated &&
+      (currentPath === '/' || !isPublicPath)
+    ) {
       navigate(Routes.auth.findOrganization);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
