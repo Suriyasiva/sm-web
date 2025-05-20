@@ -24,7 +24,7 @@ import useAuthStore from '../../store/auth.store';
 import { Routes } from '../../constants/Routes';
 
 const initialValues = {
-  orgCode: '',
+  orgCode: '9159',
 };
 
 const validationSchema = yup.object({
@@ -36,9 +36,13 @@ const SelectedOrganization = () => {
   const navigate = useNavigate();
 
   const findOrganization = async (values: { orgCode: string }) => {
-    await authStore.findOrganization(values.orgCode).then(() => {
+    const isOrganizationExists = await authStore.findOrganization(
+      values.orgCode,
+    );
+
+    if (isOrganizationExists) {
       navigate(Routes.auth.login);
-    });
+    }
   };
 
   return (

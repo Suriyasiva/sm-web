@@ -12,7 +12,6 @@ import {
   PREF_ORGANIZATION_INFO,
 } from '../constants/PreferenceKey';
 import { showToast } from '../util/toast.util';
-import { PUBLIC_PATH, Routes } from '../constants/Routes';
 import authRepository from '../repositories/auth.repository';
 import customerRepository from '../repositories/tenant/customer.repo';
 import { ICreateTenant } from './super_admin/interface';
@@ -43,7 +42,7 @@ export interface AuthStore {
   logout(): void;
   setRouteDetermination(value: boolean): void;
   createCustomer: (payload: ICreateCustomer) => Promise<void>;
-  findOrganization: (code: string) => Promise<void>;
+  findOrganization: (code: string) => Promise<boolean>;
   createTenant: (payload: ICreateTenant) => Promise<void>;
 }
 
@@ -110,9 +109,6 @@ async function handleLookupUser(
     });
   } catch (e) {
     markAsUnauthenticated(set);
-    if (!PUBLIC_PATH.includes(location.pathname)) {
-      location.pathname = Routes.auth.findOrganization;
-    }
   } finally {
     set({ isDetermining: false });
   }
@@ -151,20 +147,25 @@ async function createCustomer(
   }
 }
 
-async function findOrganization(set: SetParamType<AuthStore>, code: string) {
+async function findOrganization(
+  set: SetParamType<AuthStore>,
+  code: string,
+): Promise<boolean> {
   try {
     set({ isFindingOrganization: true });
     const response = await authRepository.findOrganization(code);
-    if (!response) {
+    if (!response.data) {
       showToast('error', 'Organization not found.', 'error');
-      throw new Error('Organization not found.');
+      return false;
     }
 
     localStorage.setItem(PREF_ORGANIZATION_INFO, JSON.stringify(response.data));
 
     set({ organizationInfo: response.data });
+    return true;
   } catch (error) {
     showToast('error', 'Organization not found.', 'error');
+    return false;
   } finally {
     set({ isFindingOrganization: false });
   }

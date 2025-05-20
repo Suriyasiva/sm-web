@@ -1,37 +1,102 @@
-import { RouterProvider } from 'react-router-dom';
+import {
+  useNavigate,
+  Routes as ReactRouter,
+  Route,
+  RouteObject,
+} from 'react-router-dom';
 import useAuthStore, { AuthState } from '../store/auth.store';
 import { Center, Spinner, Text } from '@chakra-ui/react';
 import { useEffect } from 'react';
-import rootRouter from './RootRouter';
+import { PUBLIC_PATH, Routes } from '../constants/Routes';
+import { authRoutes } from './AuthRoutes';
+import { adminRoutes } from './AdminRoutes';
 
 const MainRouter = () => {
   const authStore = useAuthStore();
+  const navigate = useNavigate();
+
+  async function handleLookup() {
+    try {
+      await authStore.lookupUser();
+    } catch (error) {
+      if (!PUBLIC_PATH.includes(location.pathname)) {
+        navigate(Routes.auth.findOrganization);
+      }
+    }
+  }
 
   useEffect(() => {
-    authStore.lookupUser();
+    handleLookup();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (
-    authStore.authState === AuthState.isDeterming ||
-    authStore.isDetermining
-  ) {
+  useEffect(() => {
+    if (authStore.authState === AuthState.authenticated) {
+      navigate(Routes.admin.dashboard);
+    } else if (authStore.authState === AuthState.unauthenticated && !PUBLIC_PATH.includes(location.pathname)) {
+      navigate(Routes.auth.findOrganization);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authStore.authState]);
+
+  function renderMainRouter() {
+    if (
+      authStore.authState === AuthState.isDeterming ||
+      authStore.isDetermining
+    ) {
+      return (
+        <Center w='full' gap={4}>
+          <Spinner />
+          <Text fontSize='20' fontWeight='bold'>
+            Loading...
+          </Text>
+        </Center>
+      );
+    }
+
+    if (authStore.authState === AuthState.unauthenticated) {
+      return (
+        <ReactRouter>
+          {authRoutes.map((ar: RouteObject, i: number) => {
+            return (
+              <Route
+                path={ar.path}
+                key={`auth-routes-${i}`}
+                element={ar.element}
+              />
+            );
+          })}
+        </ReactRouter>
+      );
+    }
+
     return (
-      <Center w='full' gap={4}>
-        <Spinner />
-        <Text fontSize='20' fontWeight='bold'>
-          Loading...
-        </Text>
-      </Center>
+      <ReactRouter>
+        {adminRoutes.map((ar: RouteObject, i: number) => {
+          return (
+            <Route
+              path={ar.path}
+              key={`admin-routes-${i}`}
+              element={ar.element}
+            >
+              {ar.children?.map((arcr: RouteObject, j: number) => {
+                return (
+                  <Route
+                    index={arcr.index ?? false}
+                    path={arcr.path}
+                    key={`admin-children-routes-${j}`}
+                    element={arcr.element}
+                  ></Route>
+                );
+              })}
+            </Route>
+          );
+        })}
+      </ReactRouter>
     );
   }
 
-  return (
-    <RouterProvider
-      router={rootRouter}
-      fallbackElement={<span>Determining...</span>}
-    />
-  );
+  return renderMainRouter();
 };
 
 export default MainRouter;

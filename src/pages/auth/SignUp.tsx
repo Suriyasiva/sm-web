@@ -107,7 +107,7 @@ function SignUp() {
                   Welcome
                 </Heading>
                 <Text fontSize={'xl'} color={'gray.600'}>
-                  Subscription Management
+                  Subscription Management <b>Customer SignIn</b>
                 </Text>
 
                 <Text style={{ color: AppColors.primaryColor }} fontSize={'xl'}>

@@ -104,7 +104,7 @@ function CreateOrganization() {
                   Welcome
                 </Heading>
                 <Text fontSize={'xl'} color={'gray.600'}>
-                  Subscription Management
+                  Subscription Management <b>Create Organization</b>
                 </Text>
               </Stack>
               <Box>

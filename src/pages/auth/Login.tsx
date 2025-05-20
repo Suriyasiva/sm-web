@@ -106,11 +106,11 @@ const Login = () => {
                   Welcome
                 </Heading>
                 <Text fontSize={'xl'} color={'gray.600'}>
-                  Subscription Management
+                  Subscription Management <b>Customer Login</b>
                 </Text>
                 <Text style={{ color: AppColors.primaryColor }} fontSize={'xl'}>
                   <span>Welcome to </span>{' '}
-                  <b>{authStore.organizationInfo.organizationName}</b>
+                  <b>{authStore?.organizationInfo?.organizationName}</b>
                 </Text>
               </Stack>
               <Box>

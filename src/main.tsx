@@ -10,6 +10,7 @@ import './localization/i18n.ts';
 
 import MainRouter from './routes/MainRouter';
 import { PREF_CHAKRA_COLOR_MODE } from './constants/PreferenceKey.ts';
+import { BrowserRouter } from 'react-router-dom';
 
 const rootElement = document.getElementById('subscription-management-web-root');
 ReactDOM.createRoot(rootElement!).render(
@@ -19,7 +20,9 @@ ReactDOM.createRoot(rootElement!).render(
       colorModeManager={SubscriptionManagementColorManager}
     >
       <ColorModeScript storageKey={PREF_CHAKRA_COLOR_MODE} />
-      <MainRouter />
+      <BrowserRouter>
+        <MainRouter />
+      </BrowserRouter>
     </ChakraProvider>
   </React.StrictMode>,
 );
